@@ -1,1 +1,55 @@
 
+
+    public static void main(String[] args) {
+        Message message = new Message();
+
+        Thread producerThread = new Thread(() -> {
+            message.produce("Hello from Producer!");
+        });
+
+        Thread consumerThread = new Thread(() -> {
+            message.consume();
+        });
+
+        producerThread.start();
+        consumerThread.start();
+    }
+
+    static class Message {
+        private String message;
+        private boolean empty = true;
+
+        public synchronized void produce(String message) {
+            while (!empty) {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+            this.message = message;
+            empty = false;
+            System.out.println("Produced: " + message);
+            notify();
+        }
+
+        public synchronized void consume() {
+            while (empty) {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+            System.out.println("Consumed: " + message);
+            empty = true;
+            notify();
+        }
+    }
+}
+
+output -----------
+Produced: Hello from Producer!
+Consumed: Hello from Producer!
+
+
