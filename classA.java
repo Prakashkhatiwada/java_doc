@@ -1,0 +1,8 @@
+class A{
+public static void main(String args[]){
+StringBuffer sb=new StringBuffer("Hello");
+System.out.println(sb);
+sb.append("Damak");
+System.out.println(sb);
+}
+}
